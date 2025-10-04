@@ -183,10 +183,18 @@ def main():
     # Load word index
     word_index = load_word_index()
     
-    # Check if model exists
-    model = load_model()
+    # Initialize model in session state if not present
+    if 'model' not in st.session_state:
+        st.session_state.model = None
     
-    if model is None:
+    # Try to load model from file if session state is empty
+    if st.session_state.model is None:
+        loaded_model = load_model()
+        if loaded_model is not None:
+            st.session_state.model = loaded_model
+    
+    # Check if we have a model (either in session state or just loaded)
+    if st.session_state.model is None:
         # Training interface
         st.warning("⚠️ No trained model found. Please train the model first.")
         
@@ -229,8 +237,13 @@ def main():
                 st.error(f"❌ Error training model: {str(e)}")
     
     else:
-        # Prediction interface
+        # ==========================================
+        # PREDICTION INTERFACE - MAIN AREA
+        # ==========================================
         st.header("🔮 Predict Movie Review Sentiment")
+        
+        # Get model from session state
+        model = st.session_state.model
         
         # Text input
         review_text = st.text_area(
