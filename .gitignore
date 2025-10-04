@@ -1,0 +1,7 @@
+# Add this to .gitignore to avoid committing large files
+imdb_sentiment_model.h5
+word_index.pkl
+__pycache__/
+*.pyc
+venv/
+.env
